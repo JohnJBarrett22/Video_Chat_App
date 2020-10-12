@@ -12,7 +12,7 @@ app.use(express.static('public'))
 
 //Routes
 app.get('/', (req, res) => {
-    res.redirect(`/${uuidV4}`)
+    res.redirect(`/${uuidV4()}`)
 })
 app.get('/:room', (req, res) => {
     res.render('room', {roomId: req.params.room})
@@ -23,6 +23,10 @@ io.on('connection', socket => {
         console.log(roomId, userId)
         socket.join(roomId)
         socket.to(roomId).broadcast.emit('user-connected', userId)
+        
+        socket.on('disconnect', () => {
+            socket.to(roomId).broadcast.emit('user-disconnected', userId)
+        })
     })
 })
 
