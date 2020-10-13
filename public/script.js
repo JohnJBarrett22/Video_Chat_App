@@ -63,22 +63,28 @@ function addVideoStream(video, stream) {
 
 //Chat Box Features
 socket.on("display_new_user", data => {
-    document.getElementById("chatbox").append("<p> style='color:green'>"+data.name+" has joined the chat"+"</p>")
+    document.getElementById("chatbox").append(data.name+" has joined the chat.")
 })
 
 socket.on("existing_messages", data => {
     for(i in data){
-        document.getElementById("chatbox").append("<p>"+data[i].name+": "+data[i].message+"</p>")
+        document.getElementById("chatbox").append(+data[i].name+": "+data[i].message)
         chatbox.scrollTop = chatbox.scrollHeight;
     }
 })
 
 socket.on("update_messages", data => {
-    document.getElementById("chatbox").append("<p>"+data.name+": "+data.message+"</p>")
+    document.getElementById("chatbox").append(data.name+": "+data.message)
     chatbox.scrollTop = chatbox.scrollHeight;
 })
-    
 
+// socket.on("update_messages", data => {
+//     let para = document.createElement("p");
+//     para.innerHTML(data.name+": "+data.message)
+//     document.getElementById("chatbox").appendChild(para);
+//     chatbox.scrollTop = chatbox.scrollHeight;
+// });
+    
 function newMsgSent() {
     msg = document.getElementById("msg").value
     socket.emit("new_message", {name:name, message:msg})
