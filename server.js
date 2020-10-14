@@ -10,7 +10,8 @@ let id = 0
 
 //Config
 app.set('view engine', 'ejs')
-app.use(express.static('public'))
+app.use(express.static(__dirname + "/public"))
+app.use(express.static(__dirname + "/static"));
 
 
 //Routes
@@ -25,6 +26,9 @@ io.on('connection', socket => {
     socket.on('join-room', (roomId, userId) => {
         console.log(roomId, userId)
         socket.join(roomId)
+
+        socket.to(roomId).broadcast.emit('user-connected', userId)
+        
         socket.on('disconnect', () => {
             socket.to(roomId).broadcast.emit('user-disconnected', userId)
         })

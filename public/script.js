@@ -27,6 +27,7 @@ navigator.mediaDevices.getUserMedia({
         })
     })
     socket.emit("new_user", {name:name})
+    
     socket.on('user-connected', userId => {
         connectToNewUser(userId, stream)
     })
@@ -57,36 +58,33 @@ function addVideoStream(video, stream) {
     video.addEventListener('loadedmetadata', () => {
         video.play()
     })
-    videoGrid.append(video)
+    videoGrid.append(video);
 }
 
 
 //Chat Box Features
 socket.on("display_new_user", data => {
-    document.getElementById("chatbox").append(data.name+" has joined the chat.")
+    document.getElementById("chatbox").append(data.name+" has joined the chat.");
 })
 
 socket.on("existing_messages", data => {
     for(i in data){
-        document.getElementById("chatbox").append(+data[i].name+": "+data[i].message)
+        let para = document.createElement("P");
+        para.innerText = data[i].name+": "+data[i].message;
+        document.getElementById("chatbox").append(para);
         chatbox.scrollTop = chatbox.scrollHeight;
     }
 })
 
 socket.on("update_messages", data => {
-    document.getElementById("chatbox").append(data.name+": "+data.message)
+    let para = document.createElement("P")
+    para.innerText = data.name+": "+data.message;
+    document.getElementById("chatbox").append(para);
     chatbox.scrollTop = chatbox.scrollHeight;
-})
-
-// socket.on("update_messages", data => {
-//     let para = document.createElement("p");
-//     para.innerHTML(data.name+": "+data.message)
-//     document.getElementById("chatbox").appendChild(para);
-//     chatbox.scrollTop = chatbox.scrollHeight;
-// });
+});
     
 function newMsgSent() {
-    msg = document.getElementById("msg").value
-    socket.emit("new_message", {name:name, message:msg})
+    msg = document.getElementById("msg").value;
+    socket.emit("new_message", {name:name, message:msg});
     document.getElementById("msg").value = "";
 }
